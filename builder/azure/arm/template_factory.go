@@ -220,6 +220,13 @@ func GetVirtualMachineDeployment(config *Config) (*resources.Deployment, error) 
 		}
 	}
 
+	if config.PublicIpSku != "" {
+		err = builder.SetPublicIpSku(config.PublicIpSku)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if config.AllowedInboundIpAddresses != nil && len(config.AllowedInboundIpAddresses) >= 1 && config.Comm.Port() != 0 {
 		err = builder.SetNetworkSecurityGroup(config.AllowedInboundIpAddresses, config.Comm.Port())
 		if err != nil {

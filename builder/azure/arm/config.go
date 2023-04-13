@@ -46,6 +46,7 @@ const (
 	DefaultPrivateVirtualNetworkWithPublicIp = false
 	DefaultVMSize                            = "Standard_A1"
 	DefaultKeyVaultSKU                       = "standard"
+	DefaultPublicIpSKU                       = "Basic"
 )
 
 const (
@@ -360,6 +361,9 @@ type Config struct {
 	// set and virtual_network_name is defined Packer is only allowed to be
 	// executed from a host on the same subnet / virtual network.
 	PrivateVirtualNetworkWithPublicIp bool `mapstructure:"private_virtual_network_with_public_ip" required:"false"`
+	// This value allows you to change the sku value
+	// Default value is "Basic"
+	PublicIpSku string `mapstructure:"public_ip_sku" required:"false"`
 	// Use a pre-existing virtual network for the
 	// VM. This option enables private communication with the VM, no public IP
 	// address is used or provisioned (unless you set
@@ -959,6 +963,10 @@ func provideDefaultValues(c *Config) {
 
 	if c.BuildKeyVaultSKU == "" {
 		c.BuildKeyVaultSKU = DefaultKeyVaultSKU
+	}
+
+	if c.PublicIpSku == "" {
+		c.PublicIpSku = DefaultPublicIpSKU
 	}
 
 	_ = c.ClientConfig.SetDefaultValues()

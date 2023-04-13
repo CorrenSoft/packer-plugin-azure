@@ -409,6 +409,17 @@ func (s *TemplateBuilder) SetVirtualNetwork(virtualNetworkResourceGroup, virtual
 	return nil
 }
 
+func (s *TemplateBuilder) SetPublicIpSku(publicIpSku string) error {
+	_, err := s.getResourceByType(resourcePublicIPAddresses)
+	if err != nil {
+		return err
+	}
+
+	s.setVariable("publicIpSku", publicIpSku)
+
+	return nil
+}
+
 func (s *TemplateBuilder) SetPrivateVirtualNetworkWithPublicIp(virtualNetworkResourceGroup, virtualNetworkName, subnetName string) error {
 	s.setVariable("virtualNetworkResourceGroup", virtualNetworkResourceGroup)
 	s.setVariable("virtualNetworkName", virtualNetworkName)
@@ -725,6 +736,9 @@ const BasicTemplate = `{
     "publicIPAddressName": {
       "type": "string"
     },
+	"publicIpSku": {
+	  "type": "string"
+	},
     "subnetName": {
       "type": "string"
     },
@@ -760,6 +774,7 @@ const BasicTemplate = `{
     "networkSecurityGroupsApiVersion": "2019-04-01",
     "location": "[resourceGroup().location]",
     "publicIPAddressType": "Dynamic",
+	"publicIpSku": "[parameters('publicIpSku')]",
     "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
     "subnetName": "[parameters('subnetName')]",
     "subnetAddressPrefix": "10.0.0.0/24",
@@ -777,6 +792,9 @@ const BasicTemplate = `{
       "location": "[variables('location')]",
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+		"sku": {
+			"name": "[variables('publicIpSku')]"
+		  },
         "dnsSettings": {
           "domainNameLabel": "[parameters('dnsNameForPublicIP')]"
         }
